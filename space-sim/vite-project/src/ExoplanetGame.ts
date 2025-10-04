@@ -74,19 +74,27 @@ export class ExoplanetGame {
         </div>
         
         <div class="game-content">
+          <div class="left-panel">
+            <div class="panel-toggle" id="left-toggle">
+              <span class="arrow">▶</span>
+            </div>
+            <div class="panel-content" id="left-panel-content">
+              <div id="slider-container"></div>
+            </div>
+          </div>
+          
           <div class="space-view">
             <div id="space-container"></div>
           </div>
           
-          <div class="controls-overlay">
-            <div class="controls-left">
-              <div id="slider-container"></div>
+          <div class="right-panel">
+            <div class="panel-toggle" id="right-toggle">
+              <span class="arrow">◀</span>
             </div>
-            <div class="controls-right">
+            <div class="panel-content" id="right-panel-content">
               <div id="feedback-container"></div>
             </div>
           </div>
-          
         </div>
       </div>
     `;
@@ -123,6 +131,40 @@ export class ExoplanetGame {
     const classifyBtn = this.container.querySelector('#classify-btn') as HTMLButtonElement;
     classifyBtn.addEventListener('click', () => {
       this.handleClassification();
+    });
+
+    // Setup panel toggles
+    this.setupPanelToggles();
+  }
+
+  private setupPanelToggles() {
+    const leftToggle = this.container.querySelector('#left-toggle') as HTMLElement;
+    const rightToggle = this.container.querySelector('#right-toggle') as HTMLElement;
+    const leftPanel = this.container.querySelector('#left-panel-content') as HTMLElement;
+    const rightPanel = this.container.querySelector('#right-panel-content') as HTMLElement;
+
+    // Left panel toggle
+    leftToggle.addEventListener('click', () => {
+      const isOpen = leftPanel.classList.contains('open');
+      if (isOpen) {
+        leftPanel.classList.remove('open');
+        leftToggle.querySelector('.arrow')!.textContent = '▶';
+      } else {
+        leftPanel.classList.add('open');
+        leftToggle.querySelector('.arrow')!.textContent = '◀';
+      }
+    });
+
+    // Right panel toggle
+    rightToggle.addEventListener('click', () => {
+      const isOpen = rightPanel.classList.contains('open');
+      if (isOpen) {
+        rightPanel.classList.remove('open');
+        rightToggle.querySelector('.arrow')!.textContent = '◀';
+      } else {
+        rightPanel.classList.add('open');
+        rightToggle.querySelector('.arrow')!.textContent = '▶';
+      }
     });
   }
 
