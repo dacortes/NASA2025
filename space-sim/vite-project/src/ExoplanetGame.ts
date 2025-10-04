@@ -78,10 +78,15 @@ export class ExoplanetGame {
             <div id="space-container"></div>
           </div>
           
-          <div class="controls-panel">
-            <div id="slider-container"></div>
-            <div id="feedback-container"></div>
+          <div class="controls-overlay">
+            <div class="controls-left">
+              <div id="slider-container"></div>
+            </div>
+            <div class="controls-right">
+              <div id="feedback-container"></div>
+            </div>
           </div>
+          
         </div>
       </div>
     `;
@@ -275,21 +280,6 @@ export class ExoplanetGame {
           </div>
         ` : ''}
         
-        ${this.gameState.attempts >= this.gameState.maxAttempts && !this.gameState.gameWon ? `
-          <div class="game-over">
-            <h4>Game Over!</h4>
-            <p>The target was: <strong>${this.gameState.targetExoplanet.name}</strong></p>
-            <button id="restart-btn" class="restart-button">Play Again</button>
-          </div>
-        ` : ''}
-        
-        ${this.gameState.gameWon ? `
-          <div class="victory">
-            <h4>🎉 Congratulations! 🎉</h4>
-            <p>You successfully classified the <strong>${this.gameState.targetExoplanet.name}</strong>!</p>
-            <button id="restart-btn" class="restart-button">Play Again</button>
-          </div>
-        ` : ''}
       </div>
     `;
 
@@ -307,8 +297,10 @@ export class ExoplanetGame {
   private getSimilarityMessage(): string {
     const similarity = this.gameState.similarity;
     
-    if (similarity >= 0.8) {
-      return '<div class="similarity-excellent">Excellent! Very close to the target!</div>';
+    if (similarity >= 0.99) {
+      return '<div class="similarity-perfect">🎯 Perfect! It\'s an almost exact match! <button id="restart-btn" class="play-again-btn">🎉 Play Again</button></div>';
+    } else if (similarity >= 0.8) {
+      return '<div class="similarity-excellent">Excellent! Very close to the target! <button id="restart-btn" class="play-again-btn">🎉 Play Again</button></div>';
     } else if (similarity >= 0.6) {
       return '<div class="similarity-good">Good! You\'re getting closer!</div>';
     } else if (similarity >= 0.4) {
