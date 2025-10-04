@@ -5,6 +5,7 @@ import { RenderPass } from 'three-stdlib';
 import { OutlinePass } from 'three-stdlib';
 
 import { CelestialBody } from '../CelestialBodies/CelestialBody';
+import { StarField } from './StarField';
 
 export class SpaceScene {
   public scene: THREE.Scene;
@@ -19,11 +20,16 @@ export class SpaceScene {
 
   private composer: EffectComposer;
   private outlinePass: OutlinePass;
+  private starField: StarField;
 
   constructor(container: HTMLElement) {
     // Crear escena
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
+
+    // Crear campo de estrellas
+    this.starField = new StarField();
+    this.scene.add(this.starField.getMesh());
 
     // Get container dimensions
     const containerRect = container.getBoundingClientRect();
