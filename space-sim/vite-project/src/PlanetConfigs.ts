@@ -15,6 +15,7 @@ export interface PlanetConfig {
       emissiveIntensity: number;
     };
   };
+  textureUrl: string;
 }
 
 export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
@@ -40,7 +41,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.1,
         emissiveIntensity: 0.0
       }
-    }
+    },
+    textureUrl: '/textures/earth.jpg'
   },
 
   'Super Earth': {
@@ -65,7 +67,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.05,
         emissiveIntensity: 0.0
       }
-    }
+    },
+    textureUrl: '/textures/earth.jpg'
   },
 
   'Ocean World': {
@@ -90,7 +93,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.0,
         emissiveIntensity: 0.1 // Ligeramente brillante por el agua
       }
-    }
+    },
+    textureUrl: '/textures/ocean.jpg'
   },
 
   'Hot Jupiter': {
@@ -115,7 +119,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.0,
         emissiveIntensity: 0.3 // Brilla por el calor
       }
-    }
+    },
+    textureUrl: '/textures/jupiter.jpg'
   },
 
   'Gas Giant': {
@@ -140,7 +145,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.0,
         emissiveIntensity: 0.0
       }
-    }
+    },
+    textureUrl: '/textures/jupiter.jpg'
   },
 
   'Ice Giant': {
@@ -165,7 +171,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.1,
         emissiveIntensity: 0.05 // Ligeramente brillante
       }
-    }
+    },
+    textureUrl: '/textures/urano.jpg'
   },
 
   'Desert World': {
@@ -190,7 +197,8 @@ export const PLANET_CONFIGS: Record<string, PlanetConfig> = {
         metalness: 0.0,
         emissiveIntensity: 0.0
       }
-    }
+    },
+    textureUrl: '/textures/desert.jpg'
   }
 };
 

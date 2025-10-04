@@ -5,7 +5,6 @@ import type { ExoplanetType } from './ExoplanetClassifier';
 import { SpaceScene } from './SpaceScene/SpaceScene';
 import { Planet } from './CelestialBodies/Planet';
 import { getTopClassificationConfig, type PlanetConfig } from './PlanetConfigs';
-import * as THREE from 'three';
 
 export interface GameState {
   targetExoplanet: {
@@ -248,6 +247,7 @@ export class ExoplanetGame {
       size,
       {
         color: planetColor,
+        textureUrl: config?.textureUrl, // Use texture from config
         temperature: temperature,
         composition: composition,
         atmosphere: atmosphere,
