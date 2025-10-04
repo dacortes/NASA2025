@@ -382,7 +382,8 @@ export class ExoplanetGame {
         </div>
         
         <div class="similarity-feedback">
-          <h5>Similarity to Target: ${Math.round(this.gameState.similarity * 100)}%</h5>
+          <h5>Parameter Similarity to Target: ${Math.round(this.gameState.similarity * 100)}%</h5>
+          <p class="similarity-explanation">This shows how close your specific parameter values are to the target planet's values.</p>
           ${this.getSimilarityMessage()}
         </div>
         
