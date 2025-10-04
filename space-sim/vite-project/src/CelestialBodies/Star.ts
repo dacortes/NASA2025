@@ -32,6 +32,7 @@ export class Star extends CelestialBody {
       textureUrl?: string;
       lightColor?: number;
       lightIntensity?: number;
+      temperature?: number;
     } = {}
   ) {
     // Las estrellas generan luz automáticamente
@@ -39,7 +40,9 @@ export class Star extends CelestialBody {
       color: options.color ?? 0xffff00,
       textureUrl: options.textureUrl,
       lightColor: options.lightColor ?? 0xfff5c0,
-      lightIntensity: options.lightIntensity ?? 2.5
+      lightIntensity: options.lightIntensity ?? 2.5,
+      temperature: options.temperature ?? 5778, // Temperatura del Sol
+      isStar: true
     });
   }
 }

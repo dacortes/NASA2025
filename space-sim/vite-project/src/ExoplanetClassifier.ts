@@ -217,7 +217,8 @@ export class ExoplanetClassifier {
           temperature: 288,
           orbitalDistance: 1.0,
           atmosphere: 1.0,
-          composition: 71
+          composition: 71,
+          brightness: 1.0
         }
       },
       {
@@ -228,7 +229,8 @@ export class ExoplanetClassifier {
           temperature: 280,
           orbitalDistance: 0.8,
           atmosphere: 2.5,
-          composition: 65
+          composition: 65,
+          brightness: 1.0
         }
       },
       {
@@ -239,7 +241,8 @@ export class ExoplanetClassifier {
           temperature: 295,
           orbitalDistance: 1.2,
           atmosphere: 1.5,
-          composition: 95
+          composition: 95,
+          brightness: 1.0
         }
       }
     ];

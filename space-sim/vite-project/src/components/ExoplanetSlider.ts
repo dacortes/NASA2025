@@ -5,6 +5,7 @@ export interface ExoplanetParameters {
   orbitalDistance: number; // AU (0.01 - 5)
   atmosphere: number;     // Atmospheric pressure (0 - 100 atm)
   composition: number;    // Water content percentage (0 - 100)
+  brightness: number;     // Brightness/intensity (0.1 - 3.0)
 }
 
 export interface ExoplanetSliderConfig {
@@ -64,6 +65,14 @@ export const EXOPLANET_CONFIGS: ExoplanetSliderConfig[] = [
     label: 'Water Content',
     unit: '%',
     key: 'composition'
+  },
+  {
+    min: 0.1,
+    max: 3.0,
+    step: 0.1,
+    label: 'Brightness',
+    unit: 'x',
+    key: 'brightness'
   }
 ];
 
@@ -81,6 +90,7 @@ export class ExoplanetSlider {
       orbitalDistance: 1,
       atmosphere: 1,
       composition: 70,
+      brightness: 1.0,
       ...initialParams
     };
     

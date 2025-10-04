@@ -46,7 +46,8 @@ export class ExoplanetGame {
         temperature: 288,
         orbitalDistance: 1,
         atmosphere: 1,
-        composition: 70
+        composition: 70,
+        brightness: 1.0
       },
       lastClassification: [],
       similarity: 0,
@@ -184,26 +185,83 @@ export class ExoplanetGame {
   }
 
   private updatePlanetVisualization() {
-    // Clear existing planets
+    // Clear existing objects
     this.spaceScene.objects.forEach(obj => {
-      this.spaceScene.scene.remove(obj.mesh);
+      this.spaceScene.removeObject(obj);
     });
     this.spaceScene.objects = [];
 
-    // Create planet based on current parameters
-    const size = Math.max(0.5, Math.min(2, this.gameState.currentGuess.radius));
-    const color = this.getPlanetColor();
+    // Create enhanced celestial body based on current parameters
+    const size = Math.max(0.5, Math.min(3, this.gameState.currentGuess.radius));
+    const { temperature, composition, atmosphere, mass, brightness } = this.gameState.currentGuess;
+    
+    // Determine if it's a star or planet based on mass and temperature
+    const isStar = mass > 10 || temperature > 1000;
+    
+    if (isStar) {
+      this.createStar(size, temperature, brightness);
+    } else {
+      this.createEnhancedPlanet(size, temperature, composition, atmosphere, brightness);
+    }
+  }
+
+  private createStar(size: number, temperature: number, brightness: number) {
+    const starColor = this.getStarColor(temperature);
+    const star = new Planet(
+      'Current Star',
+      size,
+      {
+        color: starColor,
+        temperature: temperature,
+        brightness: brightness,
+      },
+      0.02, // Rotación más rápida para estrellas
+      0,    // Sin órbita
+      0     // En el centro
+    );
+    
+    // Agregar luz de estrella con brillo ajustable
+    if (star.light) {
+      star.light.intensity = 2.5 * brightness;
+      star.light.distance = 50;
+    }
+    
+    this.spaceScene.addObject(star);
+  }
+
+  private createEnhancedPlanet(size: number, temperature: number, composition: number, atmosphere: number, brightness: number) {
+    const planetColor = this.getPlanetColor();
     
     const planet = new Planet(
-      'Current Guess',
+      'Current Planet',
       size,
-      { color },
+      {
+        color: planetColor,
+        temperature: temperature,
+        composition: composition,
+        atmosphere: atmosphere,
+        brightness: brightness
+      },
       0.01,
-      0.002,
-      8
+      0, // Sin órbita para visualización individual
+      0  // En el centro
     );
     
     this.spaceScene.addObject(planet);
+  }
+
+  private getStarColor(temperature: number): number {
+    if (temperature < 3000) {
+      return 0xff4500; // Enana roja
+    } else if (temperature < 5000) {
+      return 0xffa500; // Estrella naranja
+    } else if (temperature < 6000) {
+      return 0xffff00; // Estrella amarilla (como el Sol)
+    } else if (temperature < 10000) {
+      return 0xffffff; // Estrella blanca
+    } else {
+      return 0x87ceeb; // Gigante azul
+    }
   }
 
   private getPlanetColor(): number {
@@ -261,7 +319,6 @@ export class ExoplanetGame {
     // Check if won
     if (this.gameState.similarity >= 0.8) {
       this.gameState.gameWon = true;
-      this.showWinMessage();
     }
 
     this.updateUI();
@@ -352,10 +409,7 @@ export class ExoplanetGame {
     }
   }
 
-  private showWinMessage() {
-    // Could add confetti or other celebration effects here
-    console.log('Game won!');
-  }
+
 
   private restartGame() {
     this.gameState = this.initializeGame();

@@ -53,9 +53,28 @@ export class SpaceScene {
     this.controls.enableZoom = true;
     this.controls.enablePan = true;
 
-    // Luz ambiental suave
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    // Luz ambiental más suave
+    const ambientLight = new THREE.AmbientLight(0x404040, 100);
     this.scene.add(ambientLight);
+
+    // Luz direccional principal (como el sol)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 10, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
+    this.scene.add(directionalLight);
+
+    // Luz puntual adicional para mejor iluminación
+    const pointLight = new THREE.PointLight(0xffffff, 0.5, 30);
+    pointLight.position.set(-10, -10, -5);
+    this.scene.add(pointLight);
 
     // Postprocesado (OutlinePass)
     const renderPass = new RenderPass(this.scene, this.camera);
@@ -88,6 +107,18 @@ export class SpaceScene {
     this.objects.push(obj);
     this.scene.add(obj.mesh);
 
+    // Agregar efectos de corona/atmósfera
+    obj.coronaMeshes.forEach(mesh => {
+      this.scene.add(mesh);
+      mesh.position.copy(obj.mesh.position);
+    });
+
+    // Agregar atmósfera si existe
+    if (obj.atmosphereMesh) {
+      this.scene.add(obj.atmosphereMesh);
+      obj.atmosphereMesh.position.copy(obj.mesh.position);
+    }
+
     // Si el objeto tiene luz, agregarla a la escena
     if (obj.light) {
       console.log('Adding light to scene');
@@ -95,6 +126,34 @@ export class SpaceScene {
       this.scene.add(obj.light);
       obj.light.position.copy(obj.mesh.position);
     }
+  }
+
+  // Remover objeto celeste
+  public removeObject(obj: CelestialBody) {
+    const index = this.objects.indexOf(obj);
+    if (index > -1) {
+      this.objects.splice(index, 1);
+    }
+
+    this.scene.remove(obj.mesh);
+    
+    // Remover efectos de corona/atmósfera
+    obj.coronaMeshes.forEach(mesh => {
+      this.scene.remove(mesh);
+    });
+
+    // Remover atmósfera si existe
+    if (obj.atmosphereMesh) {
+      this.scene.remove(obj.atmosphereMesh);
+    }
+
+    // Remover luz si existe
+    if (obj.light) {
+      this.scene.remove(obj.light);
+    }
+
+    // Limpiar recursos
+    obj.dispose();
   }
 
   // Manejo de clicks
