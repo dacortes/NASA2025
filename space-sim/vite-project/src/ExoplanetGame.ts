@@ -4,6 +4,8 @@ import { ExoplanetClassifier } from './ExoplanetClassifier';
 import type { ExoplanetType } from './ExoplanetClassifier';
 import { SpaceScene } from './SpaceScene/SpaceScene';
 import { Planet } from './CelestialBodies/Planet';
+import { getTopClassificationConfig, type PlanetConfig } from './PlanetConfigs';
+import * as THREE from 'three';
 
 export interface GameState {
   targetExoplanet: {
@@ -198,10 +200,16 @@ export class ExoplanetGame {
     // Determine if it's a star or planet based on mass and temperature
     const isStar = mass > 10 || temperature > 1000;
     
+    // Get planet configuration based on last classification if available
+    let planetConfig: PlanetConfig | null = null;
+    if (this.gameState.lastClassification.length > 0) {
+      planetConfig = getTopClassificationConfig(this.gameState.lastClassification);
+    }
+    
     if (isStar) {
       this.createStar(size, temperature, brightness);
     } else {
-      this.createEnhancedPlanet(size, temperature, composition, atmosphere, brightness);
+      this.createEnhancedPlanet(size, temperature, composition, atmosphere, brightness, planetConfig);
     }
   }
 
@@ -229,8 +237,11 @@ export class ExoplanetGame {
     this.spaceScene.addObject(star);
   }
 
-  private createEnhancedPlanet(size: number, temperature: number, composition: number, atmosphere: number, brightness: number) {
+  private createEnhancedPlanet(size: number, temperature: number, composition: number, atmosphere: number, brightness: number, planetConfig: PlanetConfig | null) {
     const planetColor = this.getPlanetColor();
+    
+    // Usar configuración del planeta si está disponible
+    const config = planetConfig || null;
     
     const planet = new Planet(
       'Current Planet',
@@ -240,7 +251,8 @@ export class ExoplanetGame {
         temperature: temperature,
         composition: composition,
         atmosphere: atmosphere,
-        brightness: brightness
+        brightness: brightness,
+        planetConfig: config
       },
       0.01,
       0, // Sin órbita para visualización individual
@@ -323,6 +335,9 @@ export class ExoplanetGame {
 
     this.updateUI();
     this.showFeedback();
+    
+    // Update planet visualization with new classification
+    this.updatePlanetVisualization();
   }
 
   private async sendToBackend(parameters: ExoplanetParameters) {

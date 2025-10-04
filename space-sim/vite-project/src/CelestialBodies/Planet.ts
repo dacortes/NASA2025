@@ -1,4 +1,5 @@
 import { CelestialBody } from './CelestialBody';
+import type { PlanetConfig } from '../PlanetConfigs';
 
 export class Planet extends CelestialBody {
   constructor(
@@ -11,6 +12,7 @@ export class Planet extends CelestialBody {
       atmosphere?: number;
       composition?: number;
       brightness?: number;
+      planetConfig?: PlanetConfig | null;
     } = {},
     rotationSpeed: number = 0.01,
     orbitSpeed: number = 0.001,

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { PlanetConfig } from '../PlanetConfigs';
 
 export abstract class CelestialBody {
   public mesh: THREE.Mesh;
@@ -26,6 +27,7 @@ export abstract class CelestialBody {
       composition?: number;
       brightness?: number;
       isStar?: boolean;
+      planetConfig?: PlanetConfig | null;
     } = {},
     rotationSpeed: number = 0.01,
     orbitSpeed: number = 0.0,
@@ -40,13 +42,18 @@ export abstract class CelestialBody {
     // Crear geometría con más detalle para mejor visualización
     const geometry = new THREE.SphereGeometry(radius, 128, 128);
     
+    // Usar configuración de planeta si está disponible, sino usar cálculos dinámicos
+    const visualProps = options.planetConfig?.visualProperties;
+    
     // Aplicar variaciones de superficie para hacer el objeto menos plano
-    this.addSurfaceVariations(geometry, options.composition || 50);
+    const surfaceVariation = visualProps?.surfaceVariation ?? (options.composition || 50) / 100;
+    this.addSurfaceVariations(geometry, surfaceVariation);
     
     const materialParams: THREE.MeshStandardMaterialParameters = {
-      color: options.color ?? 0xffffff,
-      roughness: this.calculateRoughness(options.temperature || 288),
-      metalness: this.calculateMetalness(options.composition || 50),
+      color: visualProps?.baseColor ?? options.color ?? 0xffffff,
+      roughness: visualProps?.materialProperties.roughness ?? this.calculateRoughness(options.temperature || 288),
+      metalness: visualProps?.materialProperties.metalness ?? this.calculateMetalness(options.composition || 50),
+      emissiveIntensity: visualProps?.materialProperties.emissiveIntensity ?? 0,
       normalScale: new THREE.Vector2(0.5, 0.5), // Para agregar detalle superficial
       envMapIntensity: 0.8 // Para reflejos del ambiente
     };
@@ -106,13 +113,13 @@ export abstract class CelestialBody {
   }
 
   // Métodos para efectos visuales avanzados
-  private addSurfaceVariations(geometry: THREE.SphereGeometry, composition: number): void {
+  private addSurfaceVariations(geometry: THREE.SphereGeometry, surfaceVariation: number): void {
     const positions = geometry.attributes.position;
     const normals = geometry.attributes.normal;
     
-    // Crear variaciones de superficie basadas en composición
+    // Crear variaciones de superficie basadas en el factor de variación
     for (let i = 0; i < positions.count; i++) {
-      const variation = (composition / 100) * 0.05 * (Math.random() - 0.5);
+      const variation = surfaceVariation * 0.1 * (Math.random() - 0.5);
       
       // Aplicar variación a la posición
       positions.setXYZ(i, 
@@ -172,7 +179,9 @@ export abstract class CelestialBody {
 
   private createAtmosphere(options: any): void {
     const atmosphereGeometry = new THREE.SphereGeometry(this.radius * 1.08, 64, 64);
-    const atmosphereColor = this.getAtmosphereColor(options.temperature || 288);
+    const visualProps = options.planetConfig?.visualProperties;
+    const atmosphereColor = visualProps?.atmosphereColor ?? this.getAtmosphereColor(options.temperature || 288);
+    const glowIntensity = visualProps?.glowIntensity ?? 0.5;
     
     const atmosphereMaterial = new THREE.MeshBasicMaterial({
       color: atmosphereColor,
@@ -190,7 +199,7 @@ export abstract class CelestialBody {
       const glowMaterial = new THREE.MeshBasicMaterial({
         color: atmosphereColor,
         transparent: true,
-        opacity: (options.atmosphere || 1) * 0.1 * (1 - i * 0.3),
+        opacity: (options.atmosphere || 1) * glowIntensity * 0.1 * (1 - i * 0.3),
         side: THREE.BackSide,
         blending: THREE.AdditiveBlending
       });
