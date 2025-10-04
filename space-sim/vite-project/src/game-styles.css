@@ -1,0 +1,341 @@
+/* Exoplanet Game Styles */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #0c1445 0%, #1a1a2e 50%, #16213e 100%);
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+.game-header {
+  padding: 20px;
+  border-bottom: 2px solid #333;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.game-header h1 {
+  margin: 0 0 15px 0;
+  font-size: 2.5em;
+  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.target-info h3 {
+  margin: 0 0 5px 0;
+  color: #64b5f6;
+}
+
+.target-info p {
+  margin: 0;
+  color: #ccc;
+  font-style: italic;
+}
+
+.game-stats {
+  display: flex;
+  gap: 30px;
+  font-size: 1.1em;
+}
+
+.game-stats div {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #444;
+}
+
+.game-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.space-view {
+  flex: 1;
+  position: relative;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
+}
+
+#space-container {
+  width: 100%;
+  height: 100%;
+}
+
+.controls-panel {
+  width: 400px;
+  background: rgba(0, 0, 0, 0.6);
+  border-left: 2px solid #333;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Slider Styles */
+.exoplanet-controls h3 {
+  margin: 0 0 20px 0;
+  color: #64b5f6;
+  text-align: center;
+}
+
+.sliders-container {
+  margin-bottom: 20px;
+}
+
+.slider-group {
+  margin-bottom: 20px;
+}
+
+.slider-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.exoplanet-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #333;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.exoplanet-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.exoplanet-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.classify-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+}
+
+.classify-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+}
+
+.classify-button:active {
+  transform: translateY(0);
+}
+
+.classify-button:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Feedback Styles */
+.feedback-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid #444;
+}
+
+.feedback-section h4 {
+  margin: 0 0 15px 0;
+  color: #64b5f6;
+  text-align: center;
+}
+
+.classification-result {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 4px solid #64b5f6;
+}
+
+.top-result {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #42a5f5;
+}
+
+.similarity-feedback {
+  margin-bottom: 15px;
+}
+
+.similarity-feedback h5 {
+  margin: 0 0 10px 0;
+  color: #e0e0e0;
+}
+
+.similarity-excellent {
+  color: #4caf50;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(76, 175, 80, 0.2);
+  border-radius: 5px;
+  border-left: 3px solid #4caf50;
+}
+
+.similarity-good {
+  color: #8bc34a;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(139, 195, 74, 0.2);
+  border-radius: 5px;
+  border-left: 3px solid #8bc34a;
+}
+
+.similarity-fair {
+  color: #ff9800;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(255, 152, 0, 0.2);
+  border-radius: 5px;
+  border-left: 3px solid #ff9800;
+}
+
+.similarity-poor {
+  color: #f44336;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(244, 67, 54, 0.2);
+  border-radius: 5px;
+  border-left: 3px solid #f44336;
+}
+
+.other-classifications {
+  margin-top: 15px;
+}
+
+.other-classifications h5 {
+  margin: 0 0 10px 0;
+  color: #ccc;
+}
+
+.other-classifications div {
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 5px 0;
+  border-radius: 5px;
+  color: #e0e0e0;
+}
+
+.victory {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(139, 195, 74, 0.3));
+  border-radius: 10px;
+  border: 2px solid #4caf50;
+}
+
+.victory h4 {
+  margin: 0 0 15px 0;
+  color: #4caf50;
+  font-size: 1.5em;
+}
+
+.game-over {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(255, 152, 0, 0.3));
+  border-radius: 10px;
+  border: 2px solid #f44336;
+}
+
+.game-over h4 {
+  margin: 0 0 15px 0;
+  color: #f44336;
+  font-size: 1.5em;
+}
+
+.restart-button {
+  margin-top: 15px;
+  padding: 12px 25px;
+  background: linear-gradient(45deg, #64b5f6, #42a5f5);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(100, 181, 246, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .game-content {
+    flex-direction: column;
+  }
+  
+  .controls-panel {
+    width: 100%;
+    max-height: 60vh;
+    min-height: 400px;
+  }
+  
+  .game-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .game-stats {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-header h1 {
+    font-size: 2em;
+  }
+  
+  .controls-panel {
+    padding: 15px;
+  }
+  
+  .slider-group {
+    margin-bottom: 15px;
+  }
+}

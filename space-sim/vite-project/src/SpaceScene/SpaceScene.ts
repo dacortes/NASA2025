@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { OrbitControls } from 'three-stdlib';
+import { EffectComposer } from 'three-stdlib';
+import { RenderPass } from 'three-stdlib';
+import { OutlinePass } from 'three-stdlib';
 
 import { CelestialBody } from '../CelestialBodies/CelestialBody';
 
@@ -25,18 +25,25 @@ export class SpaceScene {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
 
+    // Get container dimensions
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width || container.clientWidth;
+    const containerHeight = containerRect.height || container.clientHeight;
+
     // Cámara
     this.camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      containerWidth / containerHeight,
       0.1,
       1000
     );
     this.camera.position.z = 20;
 
-    // Renderer
+    // Renderer con sombras habilitadas
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(containerWidth, containerHeight);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(this.renderer.domElement);
 
     // Controles
@@ -46,19 +53,23 @@ export class SpaceScene {
     this.controls.enableZoom = true;
     this.controls.enablePan = true;
 
+    // Luz ambiental suave
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    this.scene.add(ambientLight);
+
     // Postprocesado (OutlinePass)
     const renderPass = new RenderPass(this.scene, this.camera);
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(renderPass);
 
     this.outlinePass = new OutlinePass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      new THREE.Vector2(containerWidth, containerHeight),
       this.scene,
       this.camera
     );
-    this.outlinePass.edgeStrength = 5; // intensidad
+    this.outlinePass.edgeStrength = 3; // intensidad
     this.outlinePass.edgeGlow = 1;     // brillo
-    this.outlinePass.edgeThickness = 2;// grosor del borde
+    this.outlinePass.edgeThickness = 1;// grosor del borde
     this.outlinePass.pulsePeriod = 0;  // sin parpadeo
     this.outlinePass.visibleEdgeColor.set('#00ffff'); // azul cian
     this.outlinePass.hiddenEdgeColor.set('#000000');  // bordes ocultos invisibles
@@ -76,6 +87,14 @@ export class SpaceScene {
   public addObject(obj: CelestialBody) {
     this.objects.push(obj);
     this.scene.add(obj.mesh);
+
+    // Si el objeto tiene luz, agregarla a la escena
+    if (obj.light) {
+      console.log('Adding light to scene');
+      obj.light.castShadow = true;
+      this.scene.add(obj.light);
+      obj.light.position.copy(obj.mesh.position);
+    }
   }
 
   // Manejo de clicks
@@ -88,10 +107,21 @@ export class SpaceScene {
 
     if (intersects.length > 0) {
       const obj = intersects[0].object as THREE.Mesh;
-      this.selectedObject = obj;
 
-      // aplicar outline solo al objeto seleccionado
-      this.outlinePass.selectedObjects = [obj];
+      // Si el objeto clickeado ya estaba seleccionado, deseleccionarlo
+      if (this.selectedObject === obj) {
+        this.selectedObject = null;
+        this.outlinePass.selectedObjects = [];
+      } else {
+        // Seleccionar el nuevo objeto
+        this.selectedObject = obj;
+        this.outlinePass.selectedObjects = [obj];
+      }
+
+    } else {
+      // Si haces click en el espacio vacío, deselecciona todo
+      this.selectedObject = null;
+      this.outlinePass.selectedObjects = [];
     }
   }
 
@@ -120,9 +150,16 @@ export class SpaceScene {
 
   // Redimensionar ventana
   private onResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.composer.setSize(window.innerWidth, window.innerHeight);
+    const container = this.renderer.domElement.parentElement;
+    if (container) {
+      const containerRect = container.getBoundingClientRect();
+      const containerWidth = containerRect.width || container.clientWidth;
+      const containerHeight = containerRect.height || container.clientHeight;
+      
+      this.camera.aspect = containerWidth / containerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(containerWidth, containerHeight);
+      this.composer.setSize(containerWidth, containerHeight);
+    }
   }
 }

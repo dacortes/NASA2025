@@ -9,11 +9,17 @@ export abstract class CelestialBody {
   public distance: number;
   protected angle: number = 0;
   public originalColor: number;
+  public light?: THREE.PointLight; // luz opcional para estrellas
 
   constructor(
     name: string,
     radius: number,
-    options: { color?: number; textureUrl?: string },
+    options: {
+      color?: number;
+      textureUrl?: string;
+      lightColor?: number;
+      lightIntensity?: number;
+    } = {},
     rotationSpeed: number = 0.01,
     orbitSpeed: number = 0.0,
     distance: number = 0
@@ -24,19 +30,33 @@ export abstract class CelestialBody {
     this.orbitSpeed = orbitSpeed;
     this.distance = distance;
 
-    const geometry = new THREE.SphereGeometry(radius, 32, 32);
-    let material: THREE.Material;
+    // Material con shading para que refleje luz
+    const geometry = new THREE.SphereGeometry(radius, 64, 64);
+    const materialParams: THREE.MeshStandardMaterialParameters = {
+      color: options.color ?? 0xffffff,
+      roughness: 1,
+      metalness: 0
+    };
 
     if (options.textureUrl) {
-      const texture = new THREE.TextureLoader().load(options.textureUrl);
-      material = new THREE.MeshBasicMaterial({ map: texture });
-      this.originalColor = 0xffffff;
-    } else {
-      material = new THREE.MeshBasicMaterial({ color: options.color ?? 0xffffff });
-      this.originalColor = options.color ?? 0xffffff;
+      materialParams.map = new THREE.TextureLoader().load(options.textureUrl);
     }
 
+    const material = new THREE.MeshStandardMaterial(materialParams);
+    this.originalColor = options.color ?? 0xffffff;
+
     this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.castShadow = true;    // puede proyectar sombra
+    this.mesh.receiveShadow = true; // puede recibir sombra
+
+    // Luz opcional: solo para estrellas
+    if (options.lightIntensity && options.lightIntensity > 0) {
+      const color = options.lightColor ?? 0xffffff;
+      this.light = new THREE.PointLight(color, options.lightIntensity, 1000);
+      this.light.castShadow = true;
+      this.light.shadow.mapSize.width = 1024;
+      this.light.shadow.mapSize.height = 1024;
+    }
   }
 
   public rotate(): void {
@@ -53,5 +73,9 @@ export abstract class CelestialBody {
   public update(): void {
     this.rotate();
     this.orbit();
+
+    if (this.light) {
+      this.light.position.copy(this.mesh.position);
+    }
   }
 }
