@@ -328,8 +328,9 @@ export class ExoplanetGame {
       );
     }
 
-    // Check if won
-    if (this.gameState.similarity >= 0.8) {
+    // Check if won - top classification matches target
+    const topClassification = this.gameState.lastClassification[0];
+    if (topClassification && topClassification.name === this.gameState.targetExoplanet.name) {
       this.gameState.gameWon = true;
     }
 
@@ -410,11 +411,13 @@ export class ExoplanetGame {
 
   private getSimilarityMessage(): string {
     const similarity = this.gameState.similarity;
+    const topClassification = this.gameState.lastClassification[0];
+    const isCorrectClassification = topClassification && topClassification.name === this.gameState.targetExoplanet.name;
     
-    if (similarity >= 0.99) {
-      return '<div class="similarity-perfect">🎯 Perfect! It\'s an almost exact match! <button id="restart-btn" class="play-again-btn">🎉 Play Again</button></div>';
+    if (isCorrectClassification) {
+      return '<div class="similarity-perfect">🎯 Congratulations! You correctly classified it as a ' + this.gameState.targetExoplanet.name + '! <button id="restart-btn" class="play-again-btn">🎉 Play Again</button></div>';
     } else if (similarity >= 0.8) {
-      return '<div class="similarity-excellent">Excellent! Very close to the target! <button id="restart-btn" class="play-again-btn">🎉 Play Again</button></div>';
+      return '<div class="similarity-excellent">Close! You\'re very similar to the target, but try to match the classification.</div>';
     } else if (similarity >= 0.6) {
       return '<div class="similarity-good">Good! You\'re getting closer!</div>';
     } else if (similarity >= 0.4) {
